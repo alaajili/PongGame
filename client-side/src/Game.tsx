@@ -33,10 +33,10 @@ const Game: React.FC<ComponentProps> = (props: ComponentProps) => {
 
     if (p5.keyIsPressed) {
         if (p5.keyCode === p5.DOWN_ARROW && paddleY <= 600 - 80) {
-            paddleY += 3;
+            paddleY += 4;
         }
-        if (p5.keyCode === p5.UP_ARROW && paddleY >= 0) {
-            paddleY -= 3;
+        else if (p5.keyCode === p5.UP_ARROW && paddleY >= 0) {
+            paddleY -= 4;
         }
     }
 
