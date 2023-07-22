@@ -3,7 +3,7 @@ import {
     WebSocketServer,
     OnGatewayConnection,
     OnGatewayDisconnect,
-    SubscribeMessage
+    // SubscribeMessage
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
@@ -25,10 +25,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.connectedUsers.delete(client.id);
     }
     
-    @SubscribeMessage('move')
-    handleMove(client: Socket, data: any) {
-        this.server.emit('update', {})
-    }
+    // @SubscribeMessage('move')
+    // handleMove(client: Socket, data: any) {
+    //     this.server.emit('update', {})
+    // }
     
 
 }

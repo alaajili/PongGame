@@ -1,6 +1,10 @@
+import { ReactP5Wrapper } from '@p5-wrapper/react';
 import './App.css';
-import Game from './Game';
+import game from './Game';
 
+// import io from 'socket.io-client'
+
+// const socket = io("http://localhost:3000");
 
 function App() {
   return (
@@ -11,16 +15,18 @@ function App() {
       </div>
       <div className="flex space-x-48 items-center">
         <span className="flex flex-col items-center space-y-2">
-          <span className="h-24 w-24 bg-gray-400 rounded-lg"></span>
+          <span className="h-24 w-24 canvas"></span>
           <span className='text-white text-lg font-mono font-bold'>@USER</span>
         </span>
         <span className="text-6xl text-white font-bold">VS</span>
         <span className="flex flex-col items-center space-y-2">
-          <span className="h-24 w-24 bg-gray-400 rounded-lg"></span>
+          <span className="h-24 w-24 canvas"></span>
           <span className='text-white text-lg font-mono font-bold'>@USER</span>
         </span>
       </div>
-      <Game />
+      <div className="canvas">
+        <ReactP5Wrapper sketch={game}/>
+      </div>
       <div className="flex flex-col items-center">
       <span className="text-4xl text-white font-bold underline">score</span>
         <div className="flex space-x-48 items-center">
