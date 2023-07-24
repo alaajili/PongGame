@@ -1,12 +1,28 @@
 import { ReactP5Wrapper } from '@p5-wrapper/react';
 import './App.css';
 import game from './Game';
+import io from 'socket.io-client'
+import { useEffect } from 'react';
 
-// import io from 'socket.io-client'
-
-// const socket = io("http://localhost:3000");
+const socket = io("http://localhost:3000");
 
 function App() {
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      socket.emit("enter");
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+
+
   return (
     <div className="bg-black h-screen flex flex-col justify-center items-center space-y-12">
       <div className="absolute top-4 left-4 flex items-center space-x-2">
