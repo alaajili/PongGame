@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react';
 
 
 
-// let socket: Socket = io("http://localhost:3001");
+const socket: Socket = io("http://localhost:8000");
 
 function App() {
 
-  const [socket, setSocket] = useState<Socket>();
+  // const [socket, setSocket] = useState<Socket>();
   // const [player, setPlayer] = useState( {y: 120} );
 
   // const handleKeyDown = (event: KeyboardEvent) => {
@@ -19,23 +19,23 @@ function App() {
   //   }
   // };
 
-  const send = (value: string) => {
-    socket?.emit("msg", value);
-  };
+  // const send = (value: string) => {
+  //   socket?.emit("msg", value);
+  // };
  
-  useEffect(() => {
-    const newSocket = io("http://localhost:8000");
-    setSocket(newSocket);
-    // socket?.on('update', (data) => {
-    //   setPlayer({y: data.playerY});
-    // });
+  // useEffect(() => {
+  //   const newSocket = io("http://localhost:8000");
+  //   setSocket(newSocket);
+  //   // socket?.on('update', (data) => {
+  //   //   setPlayer({y: data.playerY});
+  //   // });
 
-    // document.addEventListener('keydown', handleKeyDown);
-    // return () => {
-    //   document.removeEventListener('keydown', handleKeyDown);
-    //   socket?.disconnect();
-    // };
-  }, [setSocket]);
+  //   // document.addEventListener('keydown', handleKeyDown);
+  //   // return () => {
+  //   //   document.removeEventListener('keydown', handleKeyDown);
+  //   //   socket?.disconnect();
+  //   // };
+  // }, [setSocket]);
 
 
   return (
