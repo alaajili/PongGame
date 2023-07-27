@@ -5,38 +5,22 @@ import { io, Socket } from 'socket.io-client'
 import { useEffect, useState } from 'react';
 
 
-
 const socket: Socket = io("http://localhost:8000");
 
 function App() {
 
-  // const [socket, setSocket] = useState<Socket>();
-  // const [player, setPlayer] = useState( {y: 120} );
+  const [ballY, setBallY] = useState<number>();
+  const [ballX, setBallX] = useState<number>();
 
-  // const handleKeyDown = (event: KeyboardEvent) => {
-  //   if (event.key === 'Enter') {
-  //     socket?.emit("enter");
-  //   }
-  // };
-
-  // const send = (value: string) => {
-  //   socket?.emit("msg", value);
-  // };
- 
-  // useEffect(() => {
-  //   const newSocket = io("http://localhost:8000");
-  //   setSocket(newSocket);
-  //   // socket?.on('update', (data) => {
-  //   //   setPlayer({y: data.playerY});
-  //   // });
-
-  //   // document.addEventListener('keydown', handleKeyDown);
-  //   // return () => {
-  //   //   document.removeEventListener('keydown', handleKeyDown);
-  //   //   socket?.disconnect();
-  //   // };
-  // }, [setSocket]);
-
+  useEffect(() => {
+    socket.on("update", (data) => {
+      setBallY(data.ballPos.x);
+      setBallX(data.ballPos.x);
+    });
+    return() => {
+      socket.off("update");
+    }
+  }, []);
 
   return (
     <div className="bg-black h-screen flex flex-col justify-center items-center space-y-12">
@@ -56,7 +40,7 @@ function App() {
         </span>
       </div>
       <div className="canvas">
-        <ReactP5Wrapper sketch={game} /*paddleY={player.y}*//>
+        <ReactP5Wrapper sketch={game} ballY={ballY} ballX={ballX} />
       </div>
       <div className="flex flex-col items-center">
       <span className="text-4xl text-white font-bold underline">score</span>
