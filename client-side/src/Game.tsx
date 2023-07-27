@@ -1,14 +1,23 @@
-import { Sketch } from "@p5-wrapper/react";
+import { Sketch, SketchProps } from "@p5-wrapper/react";
 import "./Game.css"
 
-// interface ComponentProps {
-//   // Your component props
-// }
+interface GameProps extends SketchProps {
+  paddleY: number;
+}
 
-const game:  Sketch = (p5) => {
+const game:  Sketch<GameProps> = (p5) => {
+  
+  let paddleY = 0;
+  
   p5.setup = () => { 
     p5.createCanvas(1000, 600);
     
+  }
+
+  p5.updateWithProps = (props) => {
+    if (props.paddleY) {
+      paddleY = props.paddleY;
+    }
   }
 
   p5.draw = () => {
@@ -19,7 +28,7 @@ const game:  Sketch = (p5) => {
     p5.ellipse(500, 300, 15);
     p5.line(500, 0, 500, 600);
     
-    p5.rect(4 ,3, 8, 80, 50);
+    p5.rect(4 ,paddleY, 8, 80, 50);
 
 
   }

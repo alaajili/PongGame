@@ -1,26 +1,41 @@
 import { ReactP5Wrapper } from '@p5-wrapper/react';
 import './App.css';
 import game from './Game';
-import io from 'socket.io-client'
-import { useEffect } from 'react';
+import { io, Socket } from 'socket.io-client'
+import { useEffect, useState } from 'react';
 
-const socket = io("http://localhost:3000");
+
+
+// let socket: Socket = io("http://localhost:3001");
 
 function App() {
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      socket.emit("enter");
-    }
+  const [socket, setSocket] = useState<Socket>();
+  // const [player, setPlayer] = useState( {y: 120} );
+
+  // const handleKeyDown = (event: KeyboardEvent) => {
+  //   if (event.key === 'Enter') {
+  //     socket?.emit("enter");
+  //   }
+  // };
+
+  const send = (value: string) => {
+    socket?.emit("msg", value);
   };
-
+ 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+    const newSocket = io("http://localhost:8000");
+    setSocket(newSocket);
+    // socket?.on('update', (data) => {
+    //   setPlayer({y: data.playerY});
+    // });
 
+    // document.addEventListener('keydown', handleKeyDown);
+    // return () => {
+    //   document.removeEventListener('keydown', handleKeyDown);
+    //   socket?.disconnect();
+    // };
+  }, [setSocket]);
 
 
   return (
@@ -41,7 +56,7 @@ function App() {
         </span>
       </div>
       <div className="canvas">
-        <ReactP5Wrapper sketch={game}/>
+        <ReactP5Wrapper sketch={game} /*paddleY={player.y}*//>
       </div>
       <div className="flex flex-col items-center">
       <span className="text-4xl text-white font-bold underline">score</span>
