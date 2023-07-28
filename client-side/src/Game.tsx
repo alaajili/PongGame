@@ -2,26 +2,32 @@ import { Sketch, SketchProps } from "@p5-wrapper/react";
 import "./Game.css"
 
 
+interface Ball {
+  x: number;
+  y: number;
+}
+
 interface GameProps extends SketchProps {
-  ballX: number;
-  ballY: number;
+  playerY: number;
+  ball: Ball;
 }
 
 const game:  Sketch<GameProps> = (p5) => {
-  let ballX: number = 50;
-  let ballY: number = 50;
+  let playerY: number;
+  let ball: Ball;
+
   
   p5.setup = () => { 
     p5.createCanvas(1000, 600);
     
   }
 
-  p5.updateWithProps = (props) => {
-    if (props.ballY) {
-      ballY = props.ballY;
+  p5.updateWithProps = (props) => { 
+    if (props.playerY) {
+      playerY = props.playerY;
     }
-    if (props.ballX) {
-      ballX = props.ballX;
+    if (props.ball) {
+      ball = props.ball;
     }
   }
   
@@ -33,9 +39,9 @@ const game:  Sketch<GameProps> = (p5) => {
     p5.ellipse(500, 300, 15);
     p5.line(500, 0, 500, 600);
     
-    p5.rect(4 ,5, 8, 80, 50);
+    p5.rect(4 ,playerY, 8, 80, 50);
     
-    p5.ellipse(ballX, ballY, 15);
+    p5.ellipse(ball.x, ball.y, 15);
 
 
   }

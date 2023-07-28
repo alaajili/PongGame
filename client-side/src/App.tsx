@@ -7,15 +7,17 @@ import { useEffect, useState } from 'react';
 
 const socket: Socket = io("http://localhost:8000");
 
+
+
 function App() {
 
-  const [ballY, setBallY] = useState<number>();
-  const [ballX, setBallX] = useState<number>();
+  const [playerY, setPlayerY] = useState<number>();
+  const [ball, setBall] = useState({x: 0, y: 0});
 
   useEffect(() => {
     socket.on("update", (data) => {
-      setBallY(data.ballPos.x);
-      setBallX(data.ballPos.x);
+      setPlayerY(data.leftPlayerY);
+      setBall(data.ballPos);
     });
     return() => {
       socket.off("update");
@@ -40,7 +42,7 @@ function App() {
         </span>
       </div>
       <div className="canvas">
-        <ReactP5Wrapper sketch={game} ballY={ballY} ballX={ballX} />
+        <ReactP5Wrapper sketch={game} playerY={playerY} ball={ball}/>
       </div>
       <div className="flex flex-col items-center">
       <span className="text-4xl text-white font-bold underline">score</span>
