@@ -41,7 +41,7 @@ function App() {
           <span className='text-white text-lg font-mono font-bold'>@USER</span>
         </span>
       </div>
-      <div className="canvas">
+      <div id="canvas-parent">
         <ReactP5Wrapper sketch={game} playerY={playerY} ball={ball}/>
       </div>
       <div className="flex flex-col items-center">

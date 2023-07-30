@@ -14,10 +14,11 @@ interface GameProps extends SketchProps {
 
 const game:  Sketch<GameProps> = (p5) => {
   let playerY: number;
-  let ball: Ball;
+  let ball: Ball = {x: 0, y:0};
 
   
   p5.setup = () => { 
+    
     p5.createCanvas(1000, 600);
     
   }

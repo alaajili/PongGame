@@ -31,11 +31,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private rightPlayer: Socket;
   private gameData: GameData;
 
+  private speedY = 2.5;
+  private speedX = 2.5;
+
   constructor() {
     this.gameData = {}
     this.gameData.ballPos = {}
   }
-
+ 
   private start() {
     
     this.gameData = {
@@ -71,11 +74,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @Interval(20)
-  handleBall() {
-    this.gameData.ballPos.y += 4;
-    this.gameData.ballPos.x += 4;
+  @Interval(10)
+  moveBall() {
+    this.gameData.ballPos.y += this.speedY;
+    this.gameData.ballPos.x += this.speedX;
+
     this.server.emit("update", this.gameData );
+
+    if (this.gameData.ballPos.y <= 5 || this.gameData.ballPos.y >= 595) { this.speedY *= -1; }
+    if (this.gameData.ballPos.x <= 5 || this.gameData.ballPos.x >= 995) { this.speedX *= -1; }
+
   }
 
   
