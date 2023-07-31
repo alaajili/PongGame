@@ -12,15 +12,13 @@ interface GameProps extends SketchProps {
   ball: Ball;
 }
 
-const game:  Sketch<GameProps> = (p5) => {
+const game: Sketch<GameProps> = (p5) => {
   let playerY: number;
-  let ball: Ball = {x: 0, y:0};
+  let ball: Ball = {x: 500, y:300};
 
   
   p5.setup = () => { 
-    
     p5.createCanvas(1000, 600);
-    
   }
 
   p5.updateWithProps = (props) => { 
@@ -32,6 +30,8 @@ const game:  Sketch<GameProps> = (p5) => {
     }
   }
   
+
+
   p5.draw = () => {
     
     p5.clear();
@@ -42,7 +42,7 @@ const game:  Sketch<GameProps> = (p5) => {
     
     p5.rect(4 ,playerY, 8, 80, 50);
     
-    p5.ellipse(ball.x, ball.y, 15);
+    // p5.ellipse(ball.x, ball.y, 15);
 
 
   }

@@ -14,6 +14,8 @@ function App() {
   const [playerY, setPlayerY] = useState<number>();
   const [ball, setBall] = useState({x: 0, y: 0});
 
+
+
   useEffect(() => {
     socket.on("update", (data) => {
       setPlayerY(data.leftPlayerY);
@@ -25,7 +27,7 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-black h-screen flex flex-col justify-center items-center space-y-12">
+    <div className="bg-black h-screen flex flex-col py-12  items-center space-y-12 overflow-scroll">
       <div className="absolute top-4 left-4 flex items-center space-x-2">
       <div className=" w-12 h-12 rounded-full bg-gray-400 "></div>
       <span className="text-white text-xl font-bold">leave the match</span>
@@ -41,7 +43,7 @@ function App() {
           <span className='text-white text-lg font-mono font-bold'>@USER</span>
         </span>
       </div>
-      <div id="canvas-parent">
+      <div className='canvas' >
         <ReactP5Wrapper sketch={game} playerY={playerY} ball={ball}/>
       </div>
       <div className="flex flex-col items-center">
