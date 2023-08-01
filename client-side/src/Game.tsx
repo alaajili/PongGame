@@ -65,7 +65,7 @@ const game: Sketch<GameProps> = (p5) => {
     
     p5.rect(4*scale ,playerY*scale, 8*scale, 80*scale, 50);
     
-    p5.ellipse(ball.x, ball.y, 15);
+    p5.ellipse(ball.x * scale, ball.y * scale, 15 * scale);
 
 
   }

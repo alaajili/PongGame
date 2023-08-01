@@ -4,7 +4,8 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketGateway,
-  WebSocketServer
+  WebSocketServer,
+  MessageBody
 } from '@nestjs/websockets';
 
 
@@ -74,16 +75,28 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @Interval(10)
-  moveBall() {
-    this.gameData.ballPos.y += this.speedY;
-    this.gameData.ballPos.x += this.speedX;
+  // @Interval(10)
+  // moveBall() {
+  //   this.gameData.ballPos.y += this.speedY;
+  //   this.gameData.ballPos.x += this.speedX;
 
+  //   this.server.emit("update", this.gameData );
+
+  //   if (this.gameData.ballPos.y <= 5 || this.gameData.ballPos.y >= 595) { this.speedY *= -1; }
+  //   if (this.gameData.ballPos.x <= 5 || this.gameData.ballPos.x >= 995) { this.speedX *= -1; }
+
+  // }
+
+
+  @SubscribeMessage("move")
+  movePaddle(@MessageBody() data: string) {
+    if (data === "down") {
+      this.gameData.leftPlayerY += 10;
+    }
+    if (data === "up") {
+      this.gameData.leftPlayerY -= 10;
+    }
     this.server.emit("update", this.gameData );
-
-    if (this.gameData.ballPos.y <= 5 || this.gameData.ballPos.y >= 595) { this.speedY *= -1; }
-    if (this.gameData.ballPos.x <= 5 || this.gameData.ballPos.x >= 995) { this.speedX *= -1; }
-
   }
 
   

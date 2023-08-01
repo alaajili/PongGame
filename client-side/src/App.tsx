@@ -26,6 +26,27 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        socket.emit("move", "down" );
+      }
+      else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        socket.emit("move", "up" );
+      }
+    };
+
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+
+  }, []);
+
   return (
     <div className="bg-black h-screen flex flex-col py-12  items-center space-y-12 overflow-scroll">
       <div className="absolute top-4 left-4 flex items-center space-x-2">
