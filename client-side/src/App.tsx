@@ -12,30 +12,62 @@ const socket: Socket = io("http://localhost:8000");
 function App() {
 
   const [playerY, setPlayerY] = useState<number>();
+  const [playerX, setPlayerX] = useState<number>();
+  const [opponentX, setOpponentX] = useState<number>();
+  const [opponentY, setOpponentY] = useState<number>();
+
   const [ball, setBall] = useState({x: 0, y: 0});
+  const [side, setSide] = useState<number>();
 
 
 
   useEffect(() => {
+
+    socket.on("side", (data) => {
+      setSide(data);
+      if (data === 0) {
+        setPlayerX(4);
+        setOpponentX(988);
+      }
+      else {
+        setPlayerX(988);
+        setOpponentX(4);
+      }
+    });
+
     socket.on("update", (data) => {
-      setPlayerY(data.leftPlayerY);
+      if (side === 0) {
+        setPlayerY(data.leftPlayerY);
+        setOpponentY(data.rightPlayerY);
+      } else {
+        setPlayerY(data.rightPlayerY);
+        setOpponentY(data.leftPlayerY);
+      }
       setBall(data.ballPos);
     });
     return() => {
       socket.off("update");
     }
-  }, []);
+  }, [side]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
 
       if (event.key === "ArrowDown") {
         event.preventDefault();
-        socket.emit("move", "down" );
+        if (side === 0) {
+          socket.emit("move", { direction: "down", side: "left" } );
+        } else {
+          socket.emit("move", { direction: "down", side: "right" } );
+        }
       }
       else if (event.key === "ArrowUp") {
         event.preventDefault();
-        socket.emit("move", "up" );
+        if (side === 0) {
+          socket.emit("move", { direction: "up", side: "left" } );
+        } else {
+          socket.emit("move", { direction: "up", side: "right" } );
+        }
       }
     };
 
@@ -45,34 +77,34 @@ function App() {
       document.removeEventListener('keydown', handleKeyDown);
     };
 
-  }, []);
+  }, [side]);
 
   return (
-    <div className="bg-black h-screen flex flex-col py-12  items-center space-y-12 overflow-scroll">
+    <div className="bg-black h-screen flex flex-col py-20  items-center space-y-6 lg:space-y-12 overflow-y-scroll">
       <div className="absolute top-4 left-4 flex items-center space-x-2">
       <div className=" w-12 h-12 rounded-full bg-gray-400 "></div>
       <span className="text-white text-xl font-bold">leave the match</span>
       </div>
-      <div className="flex space-x-48 items-center">
+      <div className="flex space-x-16 lg:space-x-48 items-center">
         <span className="flex flex-col items-center space-y-2">
-          <span className="h-24 w-24 canvas"></span>
+          <span className="h-20 lg:h-24 w-20 lg:w-24 canvas"></span>
           <span className='text-white text-lg font-mono font-bold'>@USER</span>
         </span>
-        <span className="text-6xl text-white font-bold">VS</span>
+        <span className="text-4xl lg:text-6xl text-white font-bold">VS</span>
         <span className="flex flex-col items-center space-y-2">
-          <span className="h-24 w-24 canvas"></span>
+          <span className="h-20 lg:h-24 w-20 lg:w-24 canvas"></span>
           <span className='text-white text-lg font-mono font-bold'>@USER</span>
         </span>
       </div>
       <div className='canvas' >
-        <ReactP5Wrapper sketch={game} playerY={playerY} ball={ball}/>
+        <ReactP5Wrapper sketch={game} playerY={playerY} opponentY={opponentY}  playerX={playerX} opponentX={opponentX} side={side} ball={ball}/>
       </div>
       <div className="flex flex-col items-center">
-      <span className="text-4xl text-white font-bold underline">score</span>
-        <div className="flex space-x-48 items-center">
-          <span className="text-white text-5xl font-black">0</span>
-          <span className="text-white text-5xl font-black">:</span>
-          <span className="text-white text-5xl font-black">0</span>
+      <span className="text-2xl lg:text-4xl text-white font-bold underline">score</span>
+        <div className="flex space-x-16 lg:space-x-48 items-center">
+          <span className="text-white text-2xl lg:text-4xl font-black">0</span>
+          <span className="text-white text-2xl lg:text-4xl font-black">:</span>
+          <span className="text-white text-2xl lg:text-4xl font-black">0</span>
         </div>
       </div>
     </div>

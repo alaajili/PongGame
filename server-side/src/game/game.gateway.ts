@@ -19,7 +19,7 @@ interface BallPos {
 interface GameData {
   ballPos?: BallPos;
   leftPlayerY?: number;
-  // rightPlayerY: number;
+  rightPlayerY?: number;
 }
 
 @WebSocketGateway(8000, { cors: '*' })
@@ -32,8 +32,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private rightPlayer: Socket;
   private gameData: GameData;
 
-  private speedY = 2.5;
-  private speedX = 2.5;
+  private speedY = 3;
+  private speedX = 3;
 
   constructor() {
     this.gameData = {}
@@ -44,6 +44,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     
     this.gameData = {
       leftPlayerY: 250,
+      rightPlayerY: 250,
       ballPos: { x: 50, y:50 }
     };
 
@@ -54,14 +55,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!this.leftPlayer) {
       this.leftPlayer = client;
       console.log("FIRST PLAYER HERE");
-      this.start();
-      this.server.emit("update", this.gameData );
+      client.emit("side", 0);
     }
     else if (!this.rightPlayer) {
       this.rightPlayer = client;
+      console.log("SECOND PLAYER HERE");
+      client.emit("side", 1);
+      this.start();
+      this.server.emit("update", this.gameData);
     }
     else {
-
+      client._onclose("forced close");
     }
   }
 
@@ -89,12 +93,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   @SubscribeMessage("move")
-  movePaddle(@MessageBody() data: string) {
-    if (data === "down") {
+  movePaddle(@MessageBody() data: any) {
+    if (data.direction === "down" && data.side === "left") {
       this.gameData.leftPlayerY += 10;
     }
-    if (data === "up") {
+    else if (data.direction === "down" && data.side === "right") {
+      this.gameData.rightPlayerY += 10;
+    }
+    else if (data.direction === "up" && data.side === "left") {
       this.gameData.leftPlayerY -= 10;
+    }
+    else if (data.direction === "up" && data.side === "right") {
+      this.gameData.rightPlayerY -= 10;
     }
     this.server.emit("update", this.gameData );
   }
