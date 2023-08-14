@@ -107,21 +107,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.gameData.rightPlayerY -= 10;
     }
 
-    // if (this.gameData.leftPlayerY < 0) {
-    //   this.gameData.leftPlayerY = 0;
-    // }
-    // else if (this.gameData.leftPlayerY > 520) {
-    //   this.gameData.leftPlayerY = 520;
-    // }
-
-    // if (this.gameData.rightPlayerY < 0) {
-    //   this.gameData.rightPlayerY = 0;
-
-    // }
-    // else if (this.gameData.rightPlayerY > 520) {
-    //   this.gameData.rightPlayerY = 520;
-    // }
-
     this.server.emit("update", this.gameData );
   }
 
