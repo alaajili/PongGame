@@ -19,7 +19,34 @@ function App() {
   const [ball, setBall] = useState({x: 0, y: 0});
   const [side, setSide] = useState<number>();
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
 
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (side === 0) {
+          socket.emit("move", { direction: "down", side: "left" } );
+        } else {
+          socket.emit("move", { direction: "down", side: "right" } );
+        }
+      }
+      else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (side === 0) {
+          socket.emit("move", { direction: "up", side: "left" } );
+        } else {
+          socket.emit("move", { direction: "up", side: "right" } );
+        }
+      }
+    };
+
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+
+  }, [side]);
 
   useEffect(() => {
 
@@ -50,49 +77,22 @@ function App() {
     }
   }, [side]);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
 
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        if (side === 0) {
-          socket.emit("move", { direction: "down", side: "left" } );
-        } else {
-          socket.emit("move", { direction: "down", side: "right" } );
-        }
-      }
-      else if (event.key === "ArrowUp") {
-        event.preventDefault();
-        if (side === 0) {
-          socket.emit("move", { direction: "up", side: "left" } );
-        } else {
-          socket.emit("move", { direction: "up", side: "right" } );
-        }
-      }
-    };
-
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-
-  }, [side]);
 
   return (
-    <div className="bg-black h-screen flex flex-col py-20  items-center space-y-6 lg:space-y-12 overflow-y-scroll">
+    <div className="bg-black h-screen flex flex-col py-12  items-center space-y-4  overflow-y-scroll">
       <div className="absolute top-4 left-4 flex items-center space-x-2">
       <div className=" w-12 h-12 rounded-full bg-gray-400 "></div>
       <span className="text-white text-xl font-bold">leave the match</span>
       </div>
       <div className="flex space-x-16 lg:space-x-48 items-center">
         <span className="flex flex-col items-center space-y-2">
-          <span className="h-20 lg:h-24 w-20 lg:w-24 canvas"></span>
+          <span className="h-16 lg:h-20 w-16 lg:w-20 canvas"></span>
           <span className='text-white text-lg font-mono font-bold'>@USER</span>
         </span>
         <span className="text-4xl lg:text-6xl text-white font-bold">VS</span>
         <span className="flex flex-col items-center space-y-2">
-          <span className="h-20 lg:h-24 w-20 lg:w-24 canvas"></span>
+          <span className="h-16 lg:h-20 w-16 lg:w-20 canvas"></span>
           <span className='text-white text-lg font-mono font-bold'>@USER</span>
         </span>
       </div>
