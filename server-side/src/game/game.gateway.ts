@@ -43,8 +43,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private start() {
     
     this.gameData = {
-      leftPlayerY: 250,
-      rightPlayerY: 250,
+      leftPlayerY: 260,
+      rightPlayerY: 150,
       ballPos: { x: 50, y:50 }
     };
 

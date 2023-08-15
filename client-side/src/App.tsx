@@ -48,6 +48,38 @@ function App() {
 
   }, [side]);
 
+
+  // useEffect(() => {
+  //   const handleMouseMove = (event: MouseEvent) => {
+  //     const mouseY = event.clientY;
+
+  //     const windowHeight = window.innerHeight;
+  //     const halfWindowHeight = windowHeight / 2;
+
+  
+  //     if (mouseY < halfWindowHeight) {
+  //       if (side === 0) {
+  //         socket.emit("move", { direction: "up", side: "left" });
+  //       } else {
+  //         socket.emit("move", { direction: "up", side: "right" });
+  //       }
+  //     } else {
+  //       if (side === 0) {
+  //         socket.emit("move", { direction: "down", side: "left" });
+  //       } else {
+  //         socket.emit("move", { direction: "down", side: "right" });
+  //       }
+  //     }
+  //   };
+  
+  //   document.addEventListener("click", handleMouseMove);
+  
+  //   return () => {
+  //     document.removeEventListener("click", handleMouseMove);
+  //   };
+  // }, [side]);
+
+
   useEffect(() => {
 
     socket.on("side", (data) => {

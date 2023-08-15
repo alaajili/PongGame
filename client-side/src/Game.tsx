@@ -18,7 +18,7 @@ interface GameProps extends SketchProps {
 const game: Sketch<GameProps> = (p5) => {
   let playerY: number;
   let playerX: number;
-  let opponentY: number = 250;
+  let opponentY: number;
   let opponentX: number;
 
   let ball: Ball = {x: 500, y:300};
