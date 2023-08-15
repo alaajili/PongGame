@@ -51,12 +51,8 @@ const game: Sketch<GameProps> = (p5) => {
   }
 
   p5.updateWithProps = (props) => { 
-    if (props.playerY) {
-      playerY = props.playerY;
-    }
-    if (props.ball) {
-      ball = props.ball;
-    }
+    playerY = props.playerY;
+    ball = props.ball;
     opponentX = props.opponentX;
     opponentY = props.opponentY;
     playerX  = props.playerX;
