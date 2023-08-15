@@ -45,9 +45,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameData = {
       leftPlayerY: 250,
       rightPlayerY: 250,
-      ballPos: { x: 50, y:50 }
+      ballPos: { x: 500, y:300 }
     };
 
+  }
+
+  private resetBall() {
+    this.gameData.ballPos = {x: 500, y:300};
+    this.speedX *= -1;
   }
 
   // handle connection of players
@@ -79,17 +84,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  // @Interval(10)
-  // moveBall() {
-  //   this.gameData.ballPos.y += this.speedY;
-  //   this.gameData.ballPos.x += this.speedX;
+  @Interval(10)
+  moveBall() {
+    this.gameData.ballPos.y += this.speedY;
+    this.gameData.ballPos.x += this.speedX;
 
-  //   this.server.emit("update", this.gameData );
+    this.server.emit("update", this.gameData );
 
-  //   if (this.gameData.ballPos.y <= 5 || this.gameData.ballPos.y >= 595) { this.speedY *= -1; }
-  //   if (this.gameData.ballPos.x <= 5 || this.gameData.ballPos.x >= 995) { this.speedX *= -1; }
+    if (this.gameData.ballPos.y <= 5 || this.gameData.ballPos.y >= 595) { this.speedY *= -1; }
+    if (this.gameData.ballPos.x <= 0 || this.gameData.ballPos.x >= 1000) { this.resetBall(); }
 
-  // }
+  }
 
 
   @SubscribeMessage("move")
