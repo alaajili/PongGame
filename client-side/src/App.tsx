@@ -16,6 +16,9 @@ function App() {
   const [opponentX, setOpponentX] = useState<number>();
   const [opponentY, setOpponentY] = useState<number>();
 
+  const [rightScore, setRightScore] = useState<number>(0);
+  const [leftScore, setLeftScore] = useState<number>(0);
+
   const [ball, setBall] = useState({x: 0, y: 0});
   const [side, setSide] = useState<number>();
 
@@ -103,6 +106,8 @@ function App() {
         setOpponentY(data.leftPlayerY);
       }
       setBall(data.ballPos);
+      setRightScore(data.rightScore);
+      setLeftScore(data.leftScore);
     });
     return() => {
       socket.off("update");
@@ -134,9 +139,9 @@ function App() {
       <div className="flex flex-col items-center">
       <span className="text-2xl lg:text-4xl text-white font-bold underline">score</span>
         <div className="flex space-x-16 lg:space-x-48 items-center">
-          <span className="text-white text-2xl lg:text-4xl font-black">0</span>
+          <span className="text-white text-2xl lg:text-4xl font-black">{leftScore}</span>
           <span className="text-white text-2xl lg:text-4xl font-black">:</span>
-          <span className="text-white text-2xl lg:text-4xl font-black">0</span>
+          <span className="text-white text-2xl lg:text-4xl font-black">{rightScore}</span>
         </div>
       </div>
     </div>

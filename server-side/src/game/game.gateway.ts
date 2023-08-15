@@ -20,8 +20,8 @@ interface GameData {
   ballPos?: BallPos;
   leftPlayerY?: number;
   rightPlayerY?: number;
-  leftPlayerScore?: number;
-  rightPlayerScore?: number;
+  leftScore?: number;
+  rightScore?: number;
 }
 
 @WebSocketGateway(8000, { cors: '*' })
@@ -47,8 +47,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameData = {
       leftPlayerY: 250,
       rightPlayerY: 250,
-      leftPlayerScore: 0,
-      rightPlayerScore: 0,
+      leftScore: 0,
+      rightScore: 0,
       ballPos: { x: 500, y:300 }
     };
 
@@ -99,11 +99,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (this.gameData.ballPos.x <= 0) {
       this.resetBall();
-      this.gameData.rightPlayerScore += 1;
+      this.gameData.rightScore += 1;
     }
     else if (this.gameData.ballPos.x >= 1000) {
       this.resetBall();
-      this.gameData.leftPlayerScore += 1;
+      this.gameData.leftScore += 1;
     }
 
   }
