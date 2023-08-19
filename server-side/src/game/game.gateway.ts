@@ -10,7 +10,7 @@ import {
 
 
 import { Server, Socket } from "socket.io"
-import { GameService } from './game.service';
+
 
 interface BallPos {
   x?: number;
@@ -23,6 +23,8 @@ interface GameData {
   rightPlayerY?: number;
   leftScore?: number;
   rightScore?: number;
+  speedX?: number;
+  speedY?: number;
 }
 
 interface User {
@@ -31,9 +33,9 @@ interface User {
 }
 
 interface Room {
-  players: User[];
-  roomName: string;
-  isFull: boolean;
+  players?: Socket[];
+  roomName?: string;
+  data?: GameData;
 }
 
 @WebSocketGateway(8000, { cors: '*' })
@@ -42,76 +44,78 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
+  private queue: Socket[] = [];
+  private rooms: Room[] = [];
 
+  private roomNames: String[] = [];
 
-  private leftPlayer: Socket;
-  private rightPlayer: Socket;
-  private gameData: GameData;
-
-  private speedY = 3;
-  private speedX = 3;
-
-  private players: User[] = [];
-
-  constructor(private gameService: GameService) {}
- 
-  private start() {
-    
-    this.gameData = {
-      leftPlayerY: 250,
-      rightPlayerY: 250,
-      leftScore: 0,
-      rightScore: 0,
-      ballPos: { x: 500, y:300 }
-    };
-
-    this.server.emit("started");
-
-  }
-
-  private resetBall() {
-    this.gameData.ballPos = {x: 500, y:300};
-    this.speedX *= -1;
-  }
 
   // handle connection of players
   async handleConnection(client: Socket) : Promise<void> {
     
+    await this.queue.push(client);
+    client.emit("joined_queue");
+
+    if (this.queue.length >= 2) {
+      const players = this.queue.splice(0, 2);
+      const roomName: string = this.createNewRoom();
+
+      players.forEach(player => {
+        player.join(roomName);
+      });
+
+      let room: Room = {roomName: roomName,
+                        players: players,
+                        data: {
+                          ballPos: {x: 500, y:300},
+                          speedX: 3,
+                          speedY: 2,
+                          leftPlayerY: 250, rightPlayerY: 250
+                        }};
+      
+      this.rooms.push(room);
+      this.server.to(room.roomName).emit("started");
+    }
     
 
-    await this.gameService.handleConnection(client);
+  }
+
+  private createNewRoom() : string {
+
+
+    let roomName: string;
+    
+    do {
+      roomName = Math.random().toString(36).substring(7);
+    } while (this.roomNames.includes(roomName));
+    
+    this.roomNames.push(roomName);
+
+    return roomName;
 
   }
 
   // handle disconnection of one of the players
   handleDisconnect(client: Socket) {
-    if (client === this.leftPlayer) {
-      this.leftPlayer = null;
-    }
-    else if (client === this.rightPlayer) {
-      this.rightPlayer = null;
-    }
+    
   }
 
-  // @Interval(10)
-  // moveBall() {
-  //   this.gameData.ballPos.y += this.speedY;
-  //   this.gameData.ballPos.x += this.speedX;
+  @Interval(10)
+  async moveBall() {
+    for (let room of this.rooms) {
+      room.data.ballPos.x += room.data.speedX;
+      room.data.ballPos.y += room.data.speedY;
 
-  //   this.server.emit("update", this.gameData );
+      if (room.data.ballPos.y >= 595 || room.data.ballPos.y <= 5) {
+        room.data.speedY *= -1;
+      }
+      if (room.data.ballPos.x >= 995 || room.data.ballPos.x <= 5) {
+        room.data.speedX *= -1;
+      }
+      this.server.to(room.roomName).emit("update", room.data);
+    }
 
-  //   if (this.gameData.ballPos.y <= 5 || this.gameData.ballPos.y >= 595) { this.speedY *= -1; }
-
-  //   if (this.gameData.ballPos.x <= 0) {
-  //     this.resetBall();
-  //     this.gameData.rightScore += 1;
-  //   }
-  //   else if (this.gameData.ballPos.x >= 1000) {
-  //     this.resetBall();
-  //     this.gameData.leftScore += 1;
-  //   }
-
-  // }
+  }
 
 
   // @SubscribeMessage("move")

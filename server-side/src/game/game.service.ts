@@ -33,7 +33,8 @@ export class GameService {
 	private rooms: Room[] = [];
   private players: Socket[] = [];
 
-	async handleConnection(client: Socket) : Promise<void> {
+	async handleConnection(client: Socket) : Promise<User> {
+    let user
     for (let room of this.rooms) {
       if (room.isFull === false) {
         room.player2 = client;
@@ -69,7 +70,7 @@ export class GameService {
     return null;
   }
 
-  
+
 
 
   
