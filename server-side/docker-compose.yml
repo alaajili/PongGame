@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  dev-db:
+    container_name: database
+    image: postgres:13-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123"
+      POSTGRES_DB: nest
+    networks:
+      - nest
+  backend:
+    container_name: backend
+    image: bahimzabir/trans:latest
+    ports:
+      - 3000:3000
+    networks:
+      - nest
+    depends_on:
+      - dev-db
+
+networks:
+  nest:
+    driver: bridge
