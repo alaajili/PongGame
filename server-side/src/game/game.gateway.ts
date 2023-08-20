@@ -81,8 +81,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   private createNewRoom() : string {
-
-
     let roomName: string;
     
     do {
@@ -118,23 +116,26 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
 
-  // @SubscribeMessage("move")
-  // movePaddle(@MessageBody() data: any) {
-  //   if (data.direction === "down" && data.side === "left" && this.gameData.leftPlayerY < 520) {
-  //     this.gameData.leftPlayerY += 10;
-  //   }
-  //   else if (data.direction === "down" && data.side === "right" && this.gameData.rightPlayerY < 520) {
-  //     this.gameData.rightPlayerY += 10;
-  //   }
-  //   else if (data.direction === "up" && data.side === "left" && this.gameData.leftPlayerY > 0) {
-  //     this.gameData.leftPlayerY -= 10;
-  //   }
-  //   else if (data.direction === "up" && data.side === "right" && this.gameData.rightPlayerY > 0) {
-  //     this.gameData.rightPlayerY -= 10;
-  //   }
+  @SubscribeMessage("move")
+  movePaddle(@MessageBody() data: any) {
+    // if (data.direction === "down" && data.side === "left" && this.gameData.leftPlayerY < 520) {
+    //   this.gameData.leftPlayerY += 10;
+    // }
+    // else if (data.direction === "down" && data.side === "right" && this.gameData.rightPlayerY < 520) {
+    //   this.gameData.rightPlayerY += 10;
+    // }
+    // else if (data.direction === "up" && data.side === "left" && this.gameData.leftPlayerY > 0) {
+    //   this.gameData.leftPlayerY -= 10;
+    // }
+    // else if (data.direction === "up" && data.side === "right" && this.gameData.rightPlayerY > 0) {
+    //   this.gameData.rightPlayerY -= 10;
+    // }
 
-  //   this.server.emit("update", this.gameData );
-  // }
+    // this.server.emit("update", this.gameData );
+
+
+
+  }
 
   
 }
