@@ -18,13 +18,11 @@ interface BallPos {
 }
 
 interface GameData {
-  ballPos?: BallPos;
-  leftPlayerY?: number;
-  rightPlayerY?: number;
-  leftScore?: number;
-  rightScore?: number;
-  speedX?: number;
-  speedY?: number;
+  ballPos: BallPos;
+  leftPlayerY: number;
+  rightPlayerY: number;
+  speedX: number;
+  speedY: number;
 }
 
 interface User {
@@ -50,35 +48,42 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private roomNames: String[] = [];
 
 
-  // handle connection of players
   async handleConnection(client: Socket) : Promise<void> {
     
     await this.queue.push(client);
-    client.emit("joined_queue");
+    //client.emit("joined_queue");
 
+    console.log(this.queue.length);
     if (this.queue.length >= 2) {
       const players = this.queue.splice(0, 2);
       const roomName: string = this.createNewRoom();
-
+      let n = 0;
       players.forEach(player => {
         player.join(roomName);
+        player.emit("join_room", {side: n, roomName: roomName});
+        n++;
       });
 
+      console.log(roomName);
+      
       let room: Room = {roomName: roomName,
                         players: players,
                         data: {
                           ballPos: {x: 500, y:300},
-                          speedX: 3,
-                          speedY: 2,
-                          leftPlayerY: 250, rightPlayerY: 250
+                          speedX: 2,
+                          speedY: 1,
+                          leftPlayerY: 250,
+                          rightPlayerY: 250
                         }};
       
       this.rooms.push(room);
       this.server.to(room.roomName).emit("started");
     }
-    
+
 
   }
+
+
 
   private createNewRoom() : string {
     let roomName: string;
@@ -107,9 +112,19 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (room.data.ballPos.y >= 595 || room.data.ballPos.y <= 5) {
         room.data.speedY *= -1;
       }
-      if (room.data.ballPos.x >= 995 || room.data.ballPos.x <= 5) {
+      if (room.data.ballPos.x > 1000 || room.data.ballPos.x < 0) {
+        room.data.ballPos = {x: 500, y:300};
+        room.data.speedX *= -1;
+        room.data.speedY *= -1;
+      }
+
+      if (room.data.ballPos.x <= 10 && (room.data.ballPos.y > room.data.leftPlayerY && room.data.ballPos.y < room.data.leftPlayerY+80)) {
         room.data.speedX *= -1;
       }
+      if (room.data.ballPos.x >= 990 && (room.data.ballPos.y > room.data.rightPlayerY && room.data.ballPos.y < room.data.rightPlayerY+80)) {
+        room.data.speedX *= -1;
+      }
+
       this.server.to(room.roomName).emit("update", room.data);
     }
 
@@ -117,24 +132,42 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   @SubscribeMessage("move")
-  movePaddle(@MessageBody() data: any) {
-    // if (data.direction === "down" && data.side === "left" && this.gameData.leftPlayerY < 520) {
-    //   this.gameData.leftPlayerY += 10;
-    // }
-    // else if (data.direction === "down" && data.side === "right" && this.gameData.rightPlayerY < 520) {
-    //   this.gameData.rightPlayerY += 10;
-    // }
-    // else if (data.direction === "up" && data.side === "left" && this.gameData.leftPlayerY > 0) {
-    //   this.gameData.leftPlayerY -= 10;
-    // }
-    // else if (data.direction === "up" && data.side === "right" && this.gameData.rightPlayerY > 0) {
-    //   this.gameData.rightPlayerY -= 10;
-    // }
+  async movePaddle(@MessageBody() data: any) {
 
-    // this.server.emit("update", this.gameData );
+    let room = this.getRoomByName(data.roomName);
+
+    if (room === undefined) {
+      return ;
+    }
+
+    if (data.direction === "down" && data.side === "left" && room.data.leftPlayerY < 520) {
+      room.data.leftPlayerY += 10;
+    }
+    else if (data.direction === "down" && data.side === "right" && room.data.rightPlayerY < 520) {
+      room.data.rightPlayerY += 10;
+    }
+    else if (data.direction === "up" && data.side === "left" && room.data.leftPlayerY > 0) {
+      room.data.leftPlayerY -= 10;
+    }
+    else if (data.direction === "up" && data.side === "right" && room.data.rightPlayerY > 0) {
+      room.data.rightPlayerY -= 10;
+    }
+
+    
+
+    this.server.to(data.roomName).emit("update",  room.data);
 
 
+  }
 
+
+  private getRoomByName(roomName: string) : Room | undefined {
+    for (let room of this.rooms) {
+      if (room.roomName === roomName) {
+        return room;
+      }
+    }
+    return undefined;
   }
 
   
