@@ -48,6 +48,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private roomNames: String[] = [];
 
 
+
   async handleConnection(client: Socket) : Promise<void> {
     
     await this.queue.push(client);
